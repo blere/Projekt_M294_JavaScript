@@ -1,0 +1,284 @@
+@import url('https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css');
+
+/* Basis-Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f9f9f9;
+    overflow: hidden; /* Kein globaler Scrollbalken */
+}
+
+/* Header und Footer */
+header, footer {
+    flex-shrink: 0;
+    text-align: center;
+    background-color: #2d3748; /* Dunkles Grau */
+    color: white;
+    padding: 10px;
+    position: sticky;
+    width: 100%;
+    z-index: 1000;
+}
+
+header {
+    top: 0;
+}
+
+footer {
+    bottom: 0;
+    position: fixed;
+}
+
+/* Hauptinhalt */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding: 20px 0; /* Abstand oben und unten */
+    overflow: hidden; /* Kein Scrollbalken für den Hauptbereich */
+    max-width: 1000px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Scrollbarer Bereich für die Top-Anzeigen */
+#crypto-container {
+    overflow-y: auto; /* Scrollbalken aktiv */
+    height: 500px; /* Feste Höhe */
+    width: 800px; /* Feste Breite */
+    max-width: 100%; /* Anpassung an kleine Bildschirme */
+    padding: 20px;
+    margin: 20px auto; /* Zentrierung und Abstand oben/unten */
+    box-sizing: border-box;
+    background-color: #ffffff; /* Weißer Hintergrund */
+    border-radius: 8px; /* Abgerundete Ecken */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sanfter Schatten */
+
+    /* Angepasste Scroll-Leiste */
+    scrollbar-width: thin; /* Dünne Scroll-Leiste */
+    scrollbar-color: #48bb78 #f9f9f9; /* Scroll-Farbe */
+}
+
+#crypto-container::-webkit-scrollbar {
+    width: 8px; /* Breite der Scroll-Leiste */
+}
+
+#crypto-container::-webkit-scrollbar-thumb {
+    background-color: #48bb78; /* Farbe des Scrollbalkens */
+    border-radius: 10px; /* Abgerundeter Balken */
+}
+
+#crypto-container::-webkit-scrollbar-track {
+    background-color: #f9f9f9; /* Hintergrund der Scroll-Leiste */
+}
+
+/* Dropdown und Button im Header */
+header .controls {
+    margin-top: 10px;
+}
+
+header select {
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+header button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    background-color: #48bb78; /* Grün */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Animation für Hover */
+}
+
+header button:hover {
+    background-color: #2d964a; /* Dunkleres Grün bei Hover */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Schatteneffekt bei Hover */
+}
+
+/* Slideshow */
+#crypto-slider-container {
+    width: 100%;
+    padding: 10px 0;
+    margin: 0 auto;
+    max-width: 1000px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.swiper {
+    width: 100%;
+    height: 150px;
+}
+
+.swiper-slide img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Coin-Karten */
+.crypto-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.crypto-card:hover {
+    transform: scale(1.05); /* Vergrößere die Karte bei Hover */
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2); /* Intensiverer Schatten bei Hover */
+    background-color: #f0f0f0; /* Hellerer Hintergrund bei Hover */
+}
+
+.crypto-rank {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    flex: 0 0 5%; /* Fixe Breite für Rang */
+    text-align: center;
+}
+
+.crypto-logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+    border-radius: 50%;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 0 0 10%; /* Fixe Breite für Logo */
+    text-align: center;
+}
+
+.crypto-name {
+    font-size: 1.2rem;
+    flex: 0 0 35%; /* Breite für Name */
+    color: #333;
+}
+
+.crypto-price {
+    font-size: 1rem;
+    flex: 0 0 25%; /* Breite für Preis */
+    color: #555;
+    text-align: right;
+}
+
+.crypto-change {
+    font-size: 1rem;
+    flex: 0 0 15%; /* Breite für Änderung */
+    text-align: right;
+}
+
+/* Popup */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup.hidden {
+    display: none;
+}
+
+.popup-content {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 500px;
+    width: 90%;
+    text-align: left;
+    position: relative;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-in-out; /* Animation beim Öffnen */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.popup-content h2 {
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+    color: #2d3748;
+    text-align: center;
+}
+
+.popup-content p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+.popup-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: red;
+    font-weight: bold;
+}
+
+.popup-close:hover {
+    color: darkred;
+}
+
+/* Responsives Design */
+@media (max-width: 768px) {
+    .crypto-card {
+        flex-wrap: wrap;
+    }
+
+    .crypto-rank, .crypto-logo, .crypto-name, .crypto-price, .crypto-change {
+        flex: 0 0 100%;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+
+    .crypto-logo {
+        margin: 0 auto 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .crypto-card {
+        padding: 10px;
+    }
+    .crypto-logo {
+        width: 40px;
+        height: 40px;
+    }
+    .crypto-rank, .crypto-name, .crypto-price, .crypto-change {
+        font-size: 0.9rem;
+    }
+}

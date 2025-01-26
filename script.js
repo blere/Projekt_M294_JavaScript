@@ -1,150 +1,248 @@
-// Basis-URL der CoinGecko API
-const apiBaseUrl = "https://api.coingecko.com/api/v3";
+// Basis-URLs für die APIs
+const apiBaseUrl = "https://api.coingecko.com/api/v3"; // CoinGecko API für Krypto-Daten
+const testApiBaseUrl = "https://jsonplaceholder.typicode.com/posts"; // Platzhalter-API für POST, PUT, DELETE
 
-// DOM-Elemente aus dem HTML
-const cryptoContainer = document.getElementById("crypto-container"); // Container für die Top-Coins
-const cryptoSlider = document.getElementById("crypto-slider"); // Slider-Container für Logos
-const coinRange = document.getElementById("coin-range"); // Dropdown für die Auswahl (Top 10, 25, 50)
-const fetchButton = document.getElementById("fetch-button"); // Button zum Laden der Top-Coins
-const popup = document.getElementById("coin-popup"); // Popup-Container
-const popupClose = document.querySelector(".popup-close"); // Schliessen-Button des Popups
-const coinDetails = document.getElementById("coin-details"); // Container für die Details eines Coins im Popup
+// DOM-Elemente
+const cryptoContainer = document.getElementById("crypto-container"); // Container für die Coin-Listen
+const fetchButton = document.getElementById("fetch-button"); // Button zum Laden der Coins
+const coinRange = document.getElementById("coin-range"); // Dropdown zur Auswahl der Anzahl Coins
+const searchButton = document.getElementById("search-button"); // Button für die Suche
+const searchInput = document.getElementById("search-input"); // Eingabefeld für die Suche
+const sliderContainer = document.getElementById("crypto-slider"); // Slider-Container für die Top-Coins
 
-// Variable für den Swiper (Slider)
-let swiper;
+const postButton = document.getElementById("post-button"); // Button für POST-Test
+const putButton = document.getElementById("put-button"); // Button für PUT-Test
+const deleteButton = document.getElementById("delete-button"); // Button für DELETE-Test
 
-// Funktion: Swiper-Instanz erstellen oder aktualisieren
-let initializeSwiper = () => {
-    if (!swiper) {
-        // Erstellt eine neue Swiper-Instanz, falls keine existiert
-        swiper = new Swiper('.swiper', {
-            slidesPerView: 7, // Zeigt 7 Slides gleichzeitig an
-            spaceBetween: 20, // Abstand zwischen den Slides
-            loop: true, // Endlos-Schleife aktivieren
-            autoplay: {
-                delay: 3000, // Automatischer Wechsel alle 3 Sekunden
-                disableOnInteraction: false, // Autoplay stoppt nicht bei Interaktion
-            },
-            speed: 800, // Geschwindigkeit der Animation
-            centeredSlides: true, // Zentriert die aktiven Slides
-        });
-    } else {
-        // Falls die Instanz existiert, wird sie aktualisiert
-        swiper.update();
-    }
-};
-
-// Event: Direkt beim Laden der Seite die Logos in den Slider laden
-window.addEventListener("DOMContentLoaded", () => {
-    loadSlideshow(); // Logos laden und im Slider anzeigen
-});
-
-// Event: Coins laden und anzeigen, wenn der Button "Anzeigen" geklickt wird
+// Event: Coins laden (basierend auf der Auswahl im Dropdown-Menü)
 fetchButton.addEventListener("click", () => {
-    const limit = coinRange.value; // Hole die ausgewählte Anzahl Coins (10, 25, 50)
-    loadCryptos(limit); // Lade die entsprechenden Coins
+    const limit = parseInt(coinRange.value, 10); // Anzahl der Coins aus dem Dropdown
+    loadCryptos(limit); // Coins laden
 });
 
-// Funktion: Lade die Logos in die Slideshow
-function loadSlideshow() {
-    fetch(`${apiBaseUrl}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1`)
-        .then(response => response.json()) // Antwort wird in JSON umgewandelt
-        .then(data => {
-            displayLogos(data); // Zeige die Logos im Slider an
-        })
-        .catch(error => console.error("Fehler beim Laden der Slideshow-Daten:", error)); // Fehlerbehandlung
-}
+// Event: Suche starten
+searchButton.addEventListener("click", () => {
+    const query = searchInput.value.trim().toLowerCase();
+    if (query) {
+        searchCrypto(query); // Suche nach Coins
+    } else {
+        alert("Bitte geben Sie einen Suchbegriff ein.");
+    }
+});
 
-// Funktion: Lade die Top-Coins basierend auf der Auswahl (10, 25, 50)
+// POST-Test
+postButton.addEventListener("click", () => {
+    fetch(testApiBaseUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            title: "Test-Daten",
+            body: "Dies ist ein POST-Test.",
+            userId: 1,
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert("POST erfolgreich! Daten: " + JSON.stringify(data));
+        })
+        .catch(error => {
+            console.error("Fehler beim POST-Test:", error);
+            alert("POST fehlgeschlagen.");
+        });
+});
+
+// PUT-Test
+putButton.addEventListener("click", () => {
+    fetch(`${testApiBaseUrl}/1`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            id: 1,
+            title: "Aktualisierte Daten",
+            body: "Dies ist ein PUT-Test.",
+            userId: 1,
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert("PUT erfolgreich! Daten: " + JSON.stringify(data));
+        })
+        .catch(error => {
+            console.error("Fehler beim PUT-Test:", error);
+            alert("PUT fehlgeschlagen.");
+        });
+});
+
+// DELETE-Test
+deleteButton.addEventListener("click", () => {
+    fetch(`${testApiBaseUrl}/1`, {
+        method: "DELETE",
+    })
+        .then(response => {
+            if (response.ok) {
+                alert("DELETE erfolgreich!");
+            } else {
+                throw new Error("DELETE fehlgeschlagen!");
+            }
+        })
+        .catch(error => {
+            console.error("Fehler beim DELETE-Test:", error);
+            alert("DELETE fehlgeschlagen.");
+        });
+});
+
+// Funktion: Coins in die Liste laden
 function loadCryptos(limit) {
-    // Zeige einen Ladeindikator, während die Daten geladen werden
-    cryptoContainer.innerHTML = "<p>Daten werden geladen...</p>";
+    cryptoContainer.innerHTML = "<p>Daten werden geladen...</p>"; // Ladehinweis anzeigen
 
     fetch(`${apiBaseUrl}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=1`)
         .then(response => {
             if (!response.ok) {
-                throw new Error("Fehler beim Abrufen der Daten."); // Fehlermeldung bei nicht erfolgreicher Antwort
+                throw new Error(`HTTP-Error! Status: ${response.status}`);
             }
             return response.json(); // Antwort in JSON umwandeln
         })
         .then(data => {
-            displayCryptos(data); // Zeige die Coins in Kartenform an
+            renderCryptoList(data); // Coins in der Liste anzeigen
+            displayLogos(data); // Logos in den Slider einfügen
         })
         .catch(error => {
-            // Fehler anzeigen, falls die API nicht erreichbar ist
+            console.error("Fehler beim Laden der Coins:", error);
+            cryptoContainer.innerHTML = `<p style="color: red;">Fehler: ${error.message}</p>`; // Fehler anzeigen
+        });
+}
+
+// Funktion: Coin-Liste rendern
+function renderCryptoList(data) {
+    cryptoContainer.innerHTML = ""; // Container leeren
+    if (data.length === 0) {
+        cryptoContainer.innerHTML = "<p>Keine Coins gefunden.</p>";
+        return;
+    }
+    data.forEach(coin => {
+        const card = `
+            <div class="crypto-card" onclick="showCoinDetails('${coin.id}')">
+                <img src="${coin.image}" alt="${coin.name}" />
+                <h3>${coin.name} (${coin.symbol.toUpperCase()})</h3>
+                <div class="crypto-stats">
+                    <p><strong>Preis:</strong> $${coin.current_price.toFixed(2)}</p>
+                    <p class="crypto-change ${coin.price_change_percentage_24h >= 0 ? 'positive' : 'negative'}">
+                        ${coin.price_change_percentage_24h.toFixed(2)}%
+                    </p>
+                </div>
+            </div>
+        `;
+        cryptoContainer.insertAdjacentHTML("beforeend", card); // Karte einfügen
+    });
+}
+
+// Funktion: Slider-Logos laden
+function displayLogos(data) {
+    const sliderContainer = document.getElementById("crypto-slider");
+    sliderContainer.innerHTML = ""; // Slider-Container leeren
+
+    // Originale Logos hinzufügen
+    data.forEach(coin => {
+        const slide = `
+            <div class="swiper-slide">
+                <img src="${coin.image}" alt="${coin.name} Logo" title="${coin.name}" />
+            </div>
+        `;
+        sliderContainer.insertAdjacentHTML("beforeend", slide); // Füge das Slide hinzu
+    });
+
+    // Dupliziere die Logos für die nahtlose Animation
+    data.forEach(coin => {
+        const slide = `
+            <div class="swiper-slide">
+                <img src="${coin.image}" alt="${coin.name} Logo" title="${coin.name}" />
+            </div>
+        `;
+        sliderContainer.insertAdjacentHTML("beforeend", slide); // Dupliziere die Logos
+    });
+
+    // Swiper-Instanz initialisieren
+    new Swiper(".swiper", {
+        slidesPerView: 6, // Anzahl der gleichzeitig angezeigten Slides
+        spaceBetween: 10, // Abstand zwischen den Logos
+        loop: true, // Endlosschleife aktivieren
+        speed: 2000, // Geschwindigkeit der Bewegung (niedriger = schneller)
+        autoplay: {
+            delay: 0, // Keine Verzögerung (kontinuierliche Bewegung)
+            disableOnInteraction: false, // Autoplay nicht stoppen bei Interaktion
+        },
+    });
+}
+
+// Event: Logos direkt beim Laden der Seite laden
+window.addEventListener("DOMContentLoaded", () => {
+    fetch(`${apiBaseUrl}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1`)
+        .then(response => response.json())
+        .then(data => {
+            displayLogos(data); // Zeige die Logos im Slider an
+        })
+        .catch(error => console.error("Fehler beim Laden der Slider-Daten:", error));
+});
+
+
+
+// Funktion: Details zu einem Coin in einem Popup anzeigen
+function showCoinDetails(coinId) {
+    fetch(`${apiBaseUrl}/coins/${coinId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP-Error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const popupContent = `
+                <div class="popup-overlay" onclick="closePopup()"></div>
+                <div class="popup">
+                    <span class="close-btn" onclick="closePopup()">×</span>
+                    <img src="${data.image.large}" alt="${data.name}" />
+                    <h2>${data.name} (${data.symbol.toUpperCase()})</h2>
+                    <p><strong>Aktueller Preis:</strong> $${data.market_data.current_price.usd}</p>
+                    <p><strong>Marktkapitalisierung:</strong> $${data.market_data.market_cap.toLocaleString()}</p>
+                    <p><strong>24h Hoch:</strong> $${data.market_data.high_24h.usd}</p>
+                    <p><strong>24h Tief:</strong> $${data.market_data.low_24h.usd}</p>
+                    <p><a href="${data.links.homepage[0]}" target="_blank">Offizielle Webseite</a></p>
+                </div>
+            `;
+            document.body.insertAdjacentHTML("beforeend", popupContent); // Popup anzeigen
+        })
+        .catch(error => console.error("Fehler beim Laden der Coin-Details:", error));
+}
+
+// Funktion: Popup schließen
+function closePopup() {
+    const popup = document.querySelector(".popup");
+    const overlay = document.querySelector(".popup-overlay");
+    if (popup) popup.remove();
+    if (overlay) overlay.remove();
+}
+
+// Funktion: Suche nach Coins
+function searchCrypto(query) {
+    fetch(`${apiBaseUrl}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250`)
+        .then(response => response.json())
+        .then(data => {
+            const filtered = data.filter(coin =>
+                coin.name.toLowerCase().includes(query) || coin.symbol.toLowerCase().includes(query)
+            );
+            renderCryptoList(filtered);
+        })
+        .catch(error => {
+            console.error("Fehler bei der Suche:", error);
             cryptoContainer.innerHTML = `<p style="color: red;">Fehler: ${error.message}</p>`;
         });
 }
 
-// Funktion: Zeige die Logos im Slider an
-function displayLogos(data) {
-    cryptoSlider.innerHTML = ""; // Slider leeren
-    data.forEach(coin => {
-        // Erstelle ein Slide für jedes Coin-Logo
-        const slide = `
-            <div class="swiper-slide">
-                <img src="${coin.image}" alt="${coin.name} Logo">
-            </div>
-        `;
-        cryptoSlider.insertAdjacentHTML("beforeend", slide); // Füge das Slide in den Slider ein
-    });
-
-    initializeSwiper(); // Swiper-Instanz erstellen oder aktualisieren
-}
-
-// Funktion: Zeige die Coins in Kartenform an
-function displayCryptos(data) {
-    cryptoContainer.innerHTML = ""; // Container leeren
-    data.forEach((coin, index) => {
-        // Bestimme die Farbe für die Preisänderung (grün für positiv, rot für negativ)
-        const changeColor = coin.price_change_percentage_24h >= 0 ? "green" : "red";
-
-        // Erstelle eine Karte für jeden Coin
-        const card = `
-            <div class="crypto-card" tabindex="0" onclick="showCoinDetails('${coin.id}')">
-                <span class="crypto-rank">${index + 1}.</span>
-                <img src="${coin.image}" alt="${coin.name} Logo" class="crypto-logo">
-                <h3 class="crypto-name">${coin.name} (${coin.symbol.toUpperCase()})</h3>
-                <p>Preis: $${coin.current_price.toFixed(2)}</p>
-                <p style="color: ${changeColor};">Änderung: ${coin.price_change_percentage_24h.toFixed(2)}%</p>
-            </div>
-        `;
-        cryptoContainer.insertAdjacentHTML("beforeend", card); // Füge die Karte in den Container ein
-    });
-}
-
-// Funktion: Zeige die Details eines Coins im Popup
-function showCoinDetails(coinId) {
-    fetch(`${apiBaseUrl}/coins/${coinId}`) // Hole die Details eines Coins von der API
-        .then(response => response.json()) // Antwort in JSON umwandeln
-        .then(data => {
-            // Fülle die Popup-Inhalte mit den Coin-Details
-            coinDetails.innerHTML = `
-                <h2>${data.name} (${data.symbol.toUpperCase()})</h2>
-                <p><strong>Preis:</strong> $${data.market_data.current_price.usd}</p>
-                <p><strong>Marktkapitalisierung:</strong> $${data.market_data.market_cap.usd.toLocaleString()}</p>
-                <p><strong>24h Hoch:</strong> $${data.market_data.high_24h.usd}</p>
-                <p><strong>24h Tief:</strong> $${data.market_data.low_24h.usd}</p>
-                <p><strong>Marktvolumen:</strong> $${data.market_data.total_volume.usd.toLocaleString()}</p>
-            `;
-            popup.classList.remove("hidden"); // Zeige das Popup
-            popup.setAttribute("aria-hidden", "false"); // Markiere das Popup als sichtbar
-        })
-        .catch(error => console.error("Fehler beim Laden der Coin-Details:", error)); // Fehlerbehandlung
-}
-
-// Event: Popup schließen, wenn der Schliessen-Button geklickt wird
-popupClose.addEventListener("click", closePopup);
-
-// Event: Popup schliessen, wenn außerhalb des Inhalts geklickt wird
-popup.addEventListener("click", (event) => {
-    if (event.target === popup) {
-        closePopup();
-    }
+// Standardmäßig die Top 10 Coins laden
+window.addEventListener("DOMContentLoaded", () => {
+    loadCryptos(10);
 });
-
-// Funktion: Popup schliessen
-function closePopup() {
-    popup.classList.add("hidden"); // Verstecke das Popup
-    popup.setAttribute("aria-hidden", "true"); // Markiere das Popup als verborgen
-}

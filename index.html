@@ -4,50 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Krypto-Dashboard</title>
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 </head>
 <body>
+    <!-- Header -->
     <header>
         <h1>Krypto-Dashboard</h1>
         <div class="controls">
-            <!-- Filter für Top-Coins -->
-            <label for="coin-range">Kryptowährungen:</label>
-            <select id="coin-range">
+            <label for="coin-range">Anzeigen:</label>
+            <select id="coin-range" aria-label="Anzahl der anzuzeigenden Coins">
                 <option value="10">Top 10</option>
                 <option value="25">Top 25</option>
                 <option value="50">Top 50</option>
             </select>
-            <button id="fetch-button">Anzeigen</button>
+            <button id="fetch-button" aria-label="Coins anzeigen">Anzeigen</button>
         </div>
     </header>
-    
-    <!-- Slideshow für Coins -->
-    <section id="crypto-slider-container" aria-label="Krypto-Slideshow">
-        <div class="swiper">
-            <div class="swiper-wrapper" id="crypto-slider"></div>
-        </div>
-    </section>
 
-    <!-- Bereich für Top-Coins -->
+<!-- Slideshow für Coins -->
+<section id="crypto-slider-container">
+    <div class="swiper">
+        <div class="swiper-wrapper" id="crypto-slider"></div>
+    </div>
+</section>
+
+
+
+    
+    
+
+    <!-- Hauptinhalt -->
     <main>
-        <section id="crypto-container" aria-label="Top-Krypto-Liste"></section>
+        <!-- Coin-Container -->
+        <section id="crypto-container" aria-label="Liste der Kryptowährungen">
+            <!-- Dynamisch generierte Inhalte -->
+        </section>
+
+        <!-- API-Aktionen -->
+        <section id="actions">
+            <h2>API-Operationen testen</h2>
+            <div class="action-buttons">
+                <button id="post-button" aria-label="POST-Test">POST-Test</button>
+                <button id="put-button" aria-label="PUT-Test">PUT-Test</button>
+                <button id="delete-button" aria-label="DELETE-Test">DELETE-Test</button>
+            </div>
+        </section>
+
+        <!-- Suchbereich -->
+        <section id="search-section" aria-labelledby="search-title">
+            <h2 id="search-title">Suche</h2>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Krypto suchen..." aria-label="Krypto-Suche">
+                <button id="search-button" aria-label="Suche starten">Suchen</button>
+            </div>
+            <div id="suggestions" class="hidden" role="region" aria-live="polite">
+                <!-- Dynamische Vorschläge -->
+            </div>
+        </section>
     </main>
 
+    <!-- Popup für Coin-Details -->
+    <div id="popup" class="hidden" role="dialog" aria-labelledby="popup-title">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()" aria-label="Popup schließen">×</span>
+            <div id="popup-body">
+                <!-- Dynamische Inhalte -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer>
         <p>&copy; 2025 Krypto-Dashboard</p>
     </footer>
 
-    <!-- Popup für Coin-Details -->
-    <div id="coin-popup" class="popup hidden" aria-hidden="true">
-        <div class="popup-content">
-            <button class="popup-close" aria-label="Schließen">&times;</button>
-            <div id="coin-details" aria-label="Details des Coins"></div>
-            <canvas id="coin-chart" aria-label="Preischart"></canvas>
-        </div>
-    </div>
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -100,17 +100,32 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 1.5rem;
-    color: #6c757d;
-    border: none;
-    background: none;
+    width: 30px; /* Breite des Buttons */
+    height: 30px; /* Höhe des Buttons */
+    background: green; /* Grüner Hintergrund */
+    border-radius: 50%; /* Runde Form */
+    display: flex; /* Flexbox aktivieren */
+    align-items: center; /* Vertikale Zentrierung */
+    justify-content: center; /* Horizontale Zentrierung */
     cursor: pointer;
     z-index: 1060;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-#popup .btn-close:hover {
-    color: #000;
+/* "×" Symbol hinzufügen */
+#popup .btn-close::before {
+    content: "×"; /* Weisses "X" hinzufügen */
+    font-size: 1.5rem; /* Schriftgröße anpassen */
+    color: white; /* Farbe auf weiß setzen */
+    font-weight: bold; /* Fettschrift */
 }
+
+/* Hover-Effekt für den Button */
+#popup .btn-close:hover {
+    background: darkgreen; /* Hintergrundfarbe beim Hover */
+    color: white; /* Farbe des "X" bleibt weiß */
+}
+
 
 /* --- Karten Styling --- */
 /* Allgemeines Styling für Coin-Karten */
@@ -171,17 +186,32 @@
 }
 
 /* --- Footer Styling --- */
+/* Stellt sicher, dass der Footer immer am unteren Rand bleibt */
+body {
+    display: flex;
+    flex-direction: column; /* Vertikale Anordnung der Kinder (Header, Main, Footer) */
+    min-height: 100vh; /* Die Seite nimmt mindestens die gesamte Höhe des Viewports ein */
+    margin: 0; /* Standard-Margin entfernen */
+}
+
+main {
+    flex: 1; /* Füllt den verfügbaren Platz zwischen Header und Footer */
+}
+
 /* Der Footer-Bereich der Seite */
 footer {
-    background-color: #343a40;
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-    margin-top: 1rem;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+    background-color: #343a40; /* Dunkler Hintergrund */
+    color: white; /* Weißer Text */
+    text-align: center; /* Zentrierter Text */
+    padding: 1rem 0; /* Vertikaler Abstand innen */
+    width: 100%; /* Nimmt die gesamte Breite der Seite ein */
+    position: fixed; /* Fixiert den Footer */
+    bottom: 0; /* Immer am unteren Rand der Seite */
+    z-index: 100; /* Stellt sicher, dass der Footer über anderen Elementen liegt */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Ein leichter Schatten für optische Trennung */
 }
+
+
 
 /* --- Responsive Design --- */
 /* Anpassungen für kleinere Bildschirme */

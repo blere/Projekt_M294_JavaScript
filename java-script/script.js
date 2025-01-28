@@ -89,28 +89,30 @@ function renderCryptoList(data) {
 // Funktion: Coin-Details im Popup anzeigen
 function showCoinDetails(coinId) {
     // API-Request, um die Details eines Coins zu laden
-    fetch(`${apiBaseUrl}/coins/${coinId}`)
-        .then(response => response.json()) // Antwort in JSON umwandeln
-        .then(data => {
-            popupContent.innerHTML = `
-                <div>
-                    <img src="${data.image.large}" class="rounded-circle mb-3" style="width: 80px;">
-                    <h2>${data.name} (${data.symbol.toUpperCase()})</h2>
-                    <p><strong>Preis:</strong> $${data.market_data.current_price.usd}</p>
-                    <p><strong>Marktkapitalisierung:</strong> $${data.market_data.market_cap.toLocaleString()}</p>
-                    <p><strong>24h Hoch:</strong> $${data.market_data.high_24h}</p>
-                    <p><strong>24h Tief:</strong> $${data.market_data.low_24h}</p>
-                    <a href="${data.links.homepage[0]}" target="_blank" class="btn btn-link">Offizielle Webseite</a>
-                    <button class="btn btn-success mt-3" onclick="addToFavorites('${data.id}', '${data.name}', '${data.symbol}', '${data.image.large}')">
-                        Zu Favoriten hinzufügen
-                    </button>
-                </div>
-            `;
-            popup.classList.remove("d-none"); // Popup sichtbar machen
-            popupOverlay.classList.remove("d-none"); // Overlay sichtbar machen
-        })
-        .catch(error => console.error("Fehler beim Laden der Coin-Details:", error));
-}
+        fetch(`${apiBaseUrl}/coins/${coinId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // API-Antwort für Debugging prüfen
+                popupContent.innerHTML = `
+                    <div>
+                        <img src="${data.image?.large || ''}" class="rounded-circle mb-3" style="width: 80px;">
+                        <h2>${data.name || 'Unbekannt'} (${data.symbol?.toUpperCase() || 'N/A'})</h2>
+                        <p><strong>Preis:</strong> $${data.market_data?.current_price?.usd || 'N/A'}</p>
+                        <p><strong>Marktkapitalisierung:</strong> $${data.market_data?.market_cap?.usd?.toLocaleString() || 'N/A'}</p>
+                        <p><strong>24h Hoch:</strong> $${data.market_data?.high_24h?.usd || 'N/A'}</p>
+                        <p><strong>24h Tief:</strong> $${data.market_data?.low_24h?.usd || 'N/A'}</p>
+                        <a href="${data.links?.homepage?.[0] || '#'}" target="_blank" class="btn btn-link">Offizielle Webseite</a>
+                        <button class="btn btn-success mt-3" onclick="addToFavorites('${data.id}', '${data.name}', '${data.symbol}', '${data.image.large || ''}')">
+                            Zu Favoriten hinzufügen
+                        </button>
+                    </div>
+                `;
+                popup.classList.remove("d-none");
+                popupOverlay.classList.remove("d-none");
+            })
+            .catch(error => console.error("Fehler beim Laden der Coin-Details:", error));
+    }
+    
 
 // Funktion: Coin zu den Favoriten hinzufügen
 function addToFavorites(id, name, symbol, image) {

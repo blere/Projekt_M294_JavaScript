@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krypto-Dashboard</title>
+    <!-- Bootstrap CSS für ein responsives Design -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Swiper CSS für den Slider -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <!-- Benutzerdefinierte CSS-Datei -->
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body data-page="index"> <!-- Markiert die Seite als "Index" für JavaScript -->
+    <!-- Header -->
+    <header class="bg-dark text-white py-3">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Titel des Dashboards -->
+                <h1 class="h3">Krypto-Dashboard</h1>
+                <div class="d-flex align-items-center">
+                    <!-- Dropdown zur Auswahl der anzuzeigenden Coins -->
+                    <label for="coin-range" class="me-2">Anzeigen:</label>
+                    <select id="coin-range" class="form-select w-auto me-3">
+                        <option value="10">Top 10</option>
+                        <option value="25">Top 25</option>
+                        <option value="50">Top 50</option>
+                    </select>
+                    <!-- Button zum Laden der Coins -->
+                    <button id="fetch-button" class="btn btn-success me-3">Anzeigen</button>
+                    <!-- Link zur Favoriten-Seite -->
+                    <a href="./html/favorites.html" class="btn btn-primary">Favoriten ansehen</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Swiper Slider -->
+    <section id="crypto-slider-container" class="my-4">
+        <div class="swiper">
+            <div class="swiper-wrapper" id="crypto-slider">
+                <!-- Dynamisch generierte Slider-Inhalte (JavaScript fügt hier Inhalte ein) -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Hauptinhalt -->
+    <main class="container my-5">
+        <section id="crypto-container" class="row g-4">
+            <!-- Dynamisch generierte Inhalte (JavaScript fügt hier Inhalte ein) -->
+        </section>
+    </main>
+
+    <!-- Popup für Coin-Details -->
+    <div id="popup-overlay" class="d-none"></div>
+    <div id="popup" class="d-none">
+        <!-- Schließen-Button für das Popup -->
+        <button class="btn-close position-absolute top-0 end-0 m-2" onclick="closePopup()"></button>
+        <!-- Inhalt des Popups -->
+        <div id="popup-content" class="p-3 bg-white rounded shadow"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <p class="mb-0">&copy; 2025 Krypto-Dashboard</p>
+    </footer>
+
+    <!-- Bootstrap JavaScript für interaktive Komponenten -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Swiper JavaScript für den Slider -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Benutzerdefinierte JavaScript-Datei -->
+    <script src="./java-script/script.js"></script>
+</body>
+</html>
